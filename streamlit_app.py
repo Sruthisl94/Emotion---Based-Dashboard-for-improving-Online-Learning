@@ -29,50 +29,36 @@ with st.form("student_form"):
     submit = st.form_submit_button("Login & Capture")
 
 if submit:
-    # Step 2: Capture image
-    st.info("Starting webcam. Press 's' to capture.")
-    cap = cv2.VideoCapture(0)
+    st.info("Please capture your image using the webcam below")
 
-    captured = False
-    while not captured:
-        ret, frame = cap.read()
-        if not ret:
-            st.error("Failed to access webcam.")
-            break
+    camera_image = st.camera_input("Take a picture")
 
-        cv2.imshow("Press 's' to capture", frame)
+    if camera_image is not None:
+        # Step 3: Predict emotion
+        st.success("Image captured successfully!")
 
-        key = cv2.waitKey(1)
-        if key == ord('s'):
-            img_path = f"data/captured/{student_name}_{student_id}.jpg"
-            cv2.imwrite(img_path, frame)
-            captured = True
-            cap.release()
-            cv2.destroyAllWindows()
+        from PIL import Image
+        import io
 
-    # Step 3: Predict emotion
-    st.success("Image captured successfully!")
+        img = Image.open(camera_image).convert("L")  # Convert to grayscale
+        img = img.resize((48, 48))
+        img_array = np.array(img) / 255.0
+        img_array = np.expand_dims(img_array, axis=(0, -1))  # Add channel dim
+        img_array = np.expand_dims(img_array, axis=0)        # Add batch dim
 
-    # Load and process image
-    img = cv2.imread(img_path)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
-
-    predicted_emotion = "Unknown"
-
-    for (x, y, w, h) in faces:
-        face = gray[y:y+h, x:x+w]
-        face = cv2.resize(face, (48, 48)) / 255.0
-        face = np.expand_dims(face, axis=(0, -1))
-
-        prediction = model.predict(face)
+        prediction = model.predict(img_array)
         emotion_idx = np.argmax(prediction)
         predicted_emotion = emotion_labels[emotion_idx]
-        break
 
-    # Step 4: Save to log
-    with open(log_path, "a") as f:
-        f.write(f"{datetime.now().isoformat()},{student_name},{student_id},{predicted_emotion}\n")
+        st.write(f"Predicted Emotion: **{predicted_emotion}**")
+
+        # Step 4: Save image and log
+        save_path = f"data/captured/{student_name}_{student_id}.jpg"
+        with open(save_path, "wb") as f:
+            f.write(camera_image.getbuffer())
+
+        with open(log_path, "a") as f:
+            f.write(f"{datetime.now().isoformat()},{student_name},{student_id},{predicted_emotion}\n")
 
     # Step 5: Display result
     st.subheader(f"Prediction: {predicted_emotion}")
