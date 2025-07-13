@@ -3,7 +3,7 @@ import numpy as np
 from tensorflow.keras.models import load_model
 
 # Load trained CNN model and labels
-model = load_model("model/model.h5")
+model = load_model("model/model.keras")
 emotion_labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sad', 'Surprise']
 
 # Load Haar Cascade for face detection
