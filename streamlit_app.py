@@ -87,19 +87,19 @@ if "student_name" in st.session_state and "student_id" in st.session_state:
             data=buffered,
             file_name=f"{st.session_state['student_name']}_{st.session_state['student_id']}.jpg",
             mime="image/jpeg")
-
         # Emotion history plots
-        if os.path.exists("data/emotion_log.csv"):
-            df = pd.read_csv("data/emotion_log.csv")
-            st.write(df)
+       if os.path.exists("data/emotion_log.csv"):
+           df = pd.read_csv("data/emotion_log.csv", names=["Time", "Name", "ID", "Emotion"], parse_dates=["Time"])
+           st.write(df)
+           student_df = df[df["ID"] == student_id]  # Define student_df here
+           st.subheader("📈 Emotion Trend for Student")
+           if not student_df.empty:
+            st.line_chart(student_df["Emotion"].value_counts())
+           else:
+            st.info("No previous emotion data found for this student.")
 
-            st.subheader("📈 Emotion Trend for Student")
-            if not student_df.empty:
-                st.line_chart(student_df["Emotion"].value_counts())
-            else:
-                st.info("No previous emotion data found for this student.")
+          st.subheader("📊 Overall Emotion Distribution")
+          st.bar_chart(df["Emotion"].value_counts())
 
-            st.subheader("📊 Overall Emotion Distribution")
-            st.bar_chart(df["Emotion"].value_counts())
 
 
