@@ -51,8 +51,9 @@ if "student_name" in st.session_state:
             (x, y, w, h) = faces[0]
             face = gray[y:y+h, x:x+w]
             face = cv2.resize(face, (48, 48)) / 255.0
-            face = np.expand_dims(face, axis=(0, -1))
-            face = np.expand_dims(face, axis=0)
+            face = np.expand_dims(face, axis=-1)  # Add channel dim
+            face = np.expand_dims(face, axis=0)   # Add batch dim
+
 
             prediction = model.predict(face)
             emotion_idx = np.argmax(prediction)
