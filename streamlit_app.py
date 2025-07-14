@@ -21,30 +21,33 @@ face_cascade = cv2.CascadeClassifier("haarcascade.xml")
 
 st.title("📊 Student Emotion Monitoring Dashboard")
 
-# Step 1: Input form
+# --- Step 1: Student Details Form ---
 with st.form("student_form"):
     student_name = st.text_input("Enter Student Name")
     student_id = st.text_input("Enter Student ID")
-    submit = st.form_submit_button("Login & Capture")
+    submit = st.form_submit_button("Login")
+
+# --- Step 2: Capture Image (after login) ---
 if submit:
+    st.session_state["student_name"] = student_name
+    st.session_state["student_id"] = student_id
+
+if "student_name" in st.session_state:
+    st.header(f"Welcome, {st.session_state['student_name']}")
+
     camera_image = st.camera_input("Take a picture")
 
-    if camera_image is None:
-        st.warning("Please take a picture to proceed.")
-    else:
+    if camera_image is not None:
         st.success("Image captured successfully!")
 
-        # Convert to grayscale
+        # Process image here
         img = Image.open(camera_image).convert("L")
         gray = np.array(img)
 
-        # Face detection
         faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
         predicted_emotion = "Unknown"
 
-        if len(faces) == 0:
-            st.error("No face detected in the image. Please try again with a clear frontal face.")
-        else:
+        if len(faces) > 0:
             (x, y, w, h) = faces[0]
             face = gray[y:y+h, x:x+w]
             face = cv2.resize(face, (48, 48)) / 255.0
@@ -55,24 +58,26 @@ if submit:
             emotion_idx = np.argmax(prediction)
             predicted_emotion = emotion_labels[emotion_idx]
 
-            # Save image
-            img_path = f"data/captured/{student_name}_{student_id}.jpg"
-            with open(img_path, "wb") as f:
-                f.write(camera_image.getbuffer())
+        # Save image
+        img_path = f"data/captured/{st.session_state['student_name']}_{st.session_state['student_id']}.jpg"
+        with open(img_path, "wb") as f:
+            f.write(camera_image.getbuffer())
 
-            # Log
-            with open(log_path, "a") as f:
-                f.write(f"{datetime.now().isoformat()},{student_name},{student_id},{predicted_emotion}\n")
+        # Log
+        with open(log_path, "a") as f:
+            f.write(f"{datetime.now().isoformat()},{st.session_state['student_name']},{st.session_state['student_id']},{predicted_emotion}\n")
 
-            # Display
-            st.subheader(f"Prediction: {predicted_emotion}")
-            st.image(camera_image, caption=f"{student_name} - {predicted_emotion}", width=300)
+        # Display
+        st.subheader(f"Prediction: {predicted_emotion}")
+        st.image(camera_image, caption=f"{st.session_state['student_name']} - {predicted_emotion}", width=300)
 
-            if predicted_emotion == "Sad":
-                st.warning("The student seems sad. Consider the following improvements:")
-                st.markdown("- Offer personal support or mentorship")
-                st.markdown("- Encourage breaks or lighter activities")
-                st.markdown("- Provide positive feedback or recognition")
+        # ... (rest of your logic)
+
+        if predicted_emotion == "Sad":
+            st.warning("The student seems sad. Consider the following improvements:")
+            st.markdown("- Offer personal support or mentorship")
+            st.markdown("- Encourage breaks or lighter activities")
+            st.markdown("- Provide positive feedback or recognition")
 
             st.download_button(
                 label="Download Captured Image",
