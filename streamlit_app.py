@@ -39,6 +39,11 @@ if "student_name" in st.session_state:
 
     if camera_image is not None:
         st.success("Image captured successfully!")
+        st.download_button(
+        label="Download Captured Image",
+        data=camera_image.getbuffer(),
+        file_name=f"{student_name}_{student_id}.jpg",
+        mime="image/jpeg")
 
         # Process image here
         img = Image.open(camera_image).convert("L")
