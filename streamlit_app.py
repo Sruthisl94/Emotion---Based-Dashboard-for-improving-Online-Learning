@@ -29,37 +29,39 @@ with st.form("student_form"):
     submit = st.form_submit_button("Login & Capture")
 
 if submit:
-    
-    
     camera_image = st.camera_input("Take a picture")
 
+    if camera_image is not None:
+        st.success("Image captured successfully!")
 
-    # Step 3: Predict emotion
-    st.success("Image captured successfully!")
-    img_path = f"data/captured/{student_name}_{student_id}.jpg"
+        # Save image to disk (optional)
+        img_path = f"data/captured/{student_name}_{student_id}.jpg"
+        with open(img_path, "wb") as f:
+            f.write(camera_image.getbuffer())
 
-    # Load and process image
-    img = cv2.imread(img_path)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
+        # Load and process image directly from the in-memory buffer
+        from PIL import Image
+        img = Image.open(camera_image).convert("L")  # Grayscale
+        gray = np.array(img)
 
-    predicted_emotion = "Unknown"
+        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
 
-    for (x, y, w, h) in faces:
-        face = gray[y:y+h, x:x+w]
-        face = cv2.resize(face, (48, 48)) / 255.0
-        face = np.expand_dims(face, axis=(0, -1))
+        predicted_emotion = "Unknown"
 
-        prediction = model.predict(face)
-        emotion_idx = np.argmax(prediction)
-        predicted_emotion = emotion_labels[emotion_idx]
-        break
-    with open(img_path, "wb") as f:
-        f.write(camera_image.getbuffer())
-    # Step 4: Save to log
-    with open(log_path, "a") as f:
-        f.write(f"{datetime.now().isoformat()},{student_name},{student_id},{predicted_emotion}\n")
+        for (x, y, w, h) in faces:
+            face = gray[y:y+h, x:x+w]
+            face = cv2.resize(face, (48, 48)) / 255.0
+            face = np.expand_dims(face, axis=(0, -1))
+            face = np.expand_dims(face, axis=0)
 
+            prediction = model.predict(face)
+            emotion_idx = np.argmax(prediction)
+            predicted_emotion = emotion_labels[emotion_idx]
+            break
+
+        # Save log
+        with open(log_path, "a") as f:
+            f.write(f"{datetime.now().isoformat()},{student_name},{student_id},{predicted_emotion}\n")
     # Step 5: Display result
     st.subheader(f"Prediction: {predicted_emotion}")
     st.image(Image.open(img_path), caption=f"{student_name} - {predicted_emotion}", width=300)
