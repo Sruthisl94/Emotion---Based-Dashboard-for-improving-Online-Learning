@@ -80,20 +80,18 @@ if submit:
             label="Download Captured Image",
             data=camera_image.getbuffer(),
             file_name=f"{student_name}_{student_id}.jpg",
-            mime="image/jpeg"
-        )
+            mime="image/jpeg")
+        
+        # Step 6: Plot emotion stats
+        if os.path.exists(log_path):
+            df = pd.read_csv(log_path, names=["Time", "Name", "ID", "Emotion"], parse_dates=["Time"])
+            student_df = df[df["ID"] == student_id]
 
+            st.subheader("📈 Emotion Trend for Student")
+            if not student_df.empty:
+                st.line_chart(student_df["Emotion"].value_counts())
+            else:
+                st.info("No previous emotion data found for this student.")
 
-    # Step 6: Plot emotion stats
-       if os.path.exists(log_path):
-           df = pd.read_csv(log_path, names=["Time", "Name", "ID", "Emotion"], parse_dates=["Time"])
-           student_df = df[df["ID"] == student_id]
-
-           st.subheader("📈 Emotion Trend for Student")
-           if not student_df.empty:
-               st.line_chart(student_df["Emotion"].value_counts())
-           else:
-               st.info("No previous emotion data found for this student.")
-
-           st.subheader("📊 Overall Emotion Distribution")
-           st.bar_chart(df["Emotion"].value_counts())
+            st.subheader("📊 Overall Emotion Distribution")
+            st.bar_chart(df["Emotion"].value_counts())
