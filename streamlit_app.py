@@ -1,5 +1,4 @@
 # streamlit_app.py
-
 import streamlit as st
 import cv2
 import numpy as np
@@ -34,9 +33,6 @@ if submit:
     if camera_image is not None:
         st.success("Image captured successfully!")
 
-        from PIL import Image
-        import io
-
         # Convert captured image to grayscale
         img = Image.open(camera_image).convert("L")
         gray = np.array(img)
@@ -44,19 +40,18 @@ if submit:
         faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
         predicted_emotion = "Unknown"
 
-        for (x, y, w, h) in faces:
+        if len(faces) > 0:
+            (x, y, w, h) = faces[0]  # Just take the first face
             face = gray[y:y+h, x:x+w]
             face = cv2.resize(face, (48, 48)) / 255.0
-            face = np.expand_dims(face, axis=(0, -1))  # Add channel dim
-            face = np.expand_dims(face, axis=0)        # Add batch dim
+            face = np.expand_dims(face, axis=(0, -1))
+            face = np.expand_dims(face, axis=0)
 
             prediction = model.predict(face)
             emotion_idx = np.argmax(prediction)
             predicted_emotion = emotion_labels[emotion_idx]
-            break  # Just take the first face
 
         # Save image locally (optional)
-        os.makedirs("data/captured", exist_ok=True)
         img_path = f"data/captured/{student_name}_{student_id}.jpg"
         with open(img_path, "wb") as f:
             f.write(camera_image.getbuffer())
@@ -68,20 +63,21 @@ if submit:
         # Show result
         st.subheader(f"Prediction: {predicted_emotion}")
         st.image(camera_image, caption=f"{student_name} - {predicted_emotion}", width=300)
-        
+
         if predicted_emotion == "Sad":
             st.warning("The student seems sad. Consider the following improvements:")
             st.markdown("- Offer personal support or mentorship")
             st.markdown("- Encourage breaks or lighter activities")
             st.markdown("- Provide positive feedback or recognition")
 
-       # Optional: Download button
+        # Optional: Download button
         st.download_button(
             label="Download Captured Image",
             data=camera_image.getbuffer(),
             file_name=f"{student_name}_{student_id}.jpg",
-            mime="image/jpeg")
-        
+            mime="image/jpeg"
+        )
+
         # Step 6: Plot emotion stats
         if os.path.exists(log_path):
             df = pd.read_csv(log_path, names=["Time", "Name", "ID", "Emotion"], parse_dates=["Time"])
@@ -95,3 +91,5 @@ if submit:
 
             st.subheader("📊 Overall Emotion Distribution")
             st.bar_chart(df["Emotion"].value_counts())
+
+
