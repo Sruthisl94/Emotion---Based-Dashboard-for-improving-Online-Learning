@@ -81,12 +81,12 @@ if "student_name" in st.session_state:
             st.markdown("- Encourage breaks or lighter activities")
             st.markdown("- Provide positive feedback or recognition")
 
-            st.download_button(
+            if camera_image is not None:
+                st.download_button(
                 label="Download Captured Image",
                 data=camera_image.getbuffer(),
                 file_name=f"{student_name}_{student_id}.jpg",
-                mime="image/jpeg"
-            )
+                mime="image/jpeg")
 
             # Plot stats
             if os.path.exists(log_path):
