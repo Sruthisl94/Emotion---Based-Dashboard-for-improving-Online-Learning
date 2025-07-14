@@ -86,8 +86,7 @@ if "student_name" in st.session_state and "student_id" in st.session_state:
             label="Download Captured Image",
             data=buffered,
             file_name=f"{st.session_state['student_name']}_{st.session_state['student_id']}.jpg",
-            mime="image/jpeg"
-        )
+            mime="image/jpeg")
 
         # Emotion history plots
         if os.path.exists("data/emotion_log.csv"):
