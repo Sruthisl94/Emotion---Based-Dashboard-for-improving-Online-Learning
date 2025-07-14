@@ -33,15 +33,16 @@ if submit:
     if camera_image is not None:
         st.success("Image captured successfully!")
 
-        # Convert captured image to grayscale
+        # Convert to grayscale for OpenCV
         img = Image.open(camera_image).convert("L")
         gray = np.array(img)
 
+        # Face detection
         faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
         predicted_emotion = "Unknown"
 
         if len(faces) > 0:
-            (x, y, w, h) = faces[0]  # Just take the first face
+            (x, y, w, h) = faces[0]
             face = gray[y:y+h, x:x+w]
             face = cv2.resize(face, (48, 48)) / 255.0
             face = np.expand_dims(face, axis=(0, -1))
@@ -51,12 +52,12 @@ if submit:
             emotion_idx = np.argmax(prediction)
             predicted_emotion = emotion_labels[emotion_idx]
 
-        # Save image locally (optional)
+        # Save image to disk
         img_path = f"data/captured/{student_name}_{student_id}.jpg"
         with open(img_path, "wb") as f:
             f.write(camera_image.getbuffer())
 
-        # Log the result
+        # Save to CSV
         with open(log_path, "a") as f:
             f.write(f"{datetime.now().isoformat()},{student_name},{student_id},{predicted_emotion}\n")
 
@@ -64,13 +65,14 @@ if submit:
         st.subheader(f"Prediction: {predicted_emotion}")
         st.image(camera_image, caption=f"{student_name} - {predicted_emotion}", width=300)
 
+        # Suggestions if student is sad
         if predicted_emotion == "Sad":
             st.warning("The student seems sad. Consider the following improvements:")
             st.markdown("- Offer personal support or mentorship")
             st.markdown("- Encourage breaks or lighter activities")
             st.markdown("- Provide positive feedback or recognition")
 
-        # Optional: Download button
+        # Download image
         st.download_button(
             label="Download Captured Image",
             data=camera_image.getbuffer(),
@@ -78,7 +80,7 @@ if submit:
             mime="image/jpeg"
         )
 
-        # Step 6: Plot emotion stats
+        # Plot emotion history
         if os.path.exists(log_path):
             df = pd.read_csv(log_path, names=["Time", "Name", "ID", "Emotion"], parse_dates=["Time"])
             student_df = df[df["ID"] == student_id]
@@ -91,5 +93,3 @@ if submit:
 
             st.subheader("📊 Overall Emotion Distribution")
             st.bar_chart(df["Emotion"].value_counts())
-
-
