@@ -90,9 +90,9 @@ if "student_name" in st.session_state and "student_id" in st.session_state:
         )
 
         # Emotion history plots
-        if os.path.exists(log_path):
-            df = pd.read_csv(log_path, names=["Time", "Name", "ID", "Emotion"], parse_dates=["Time"])
-            student_df = df[df["ID"] == st.session_state["student_id"]]
+        if os.path.exists("data/emotion_log.csv"):
+            df = pd.read_csv("data/emotion_log.csv")
+            st.write(df)
 
             st.subheader("📈 Emotion Trend for Student")
             if not student_df.empty:
