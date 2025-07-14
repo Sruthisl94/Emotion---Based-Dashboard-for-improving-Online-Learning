@@ -1,4 +1,31 @@
 # streamlit_app.py
+import streamlit as st
+import cv2
+import numpy as np
+from PIL import Image
+from datetime import datetime
+import os
+import pandas as pd
+from tensorflow.keras.models import load_model
+
+# Load model and labels
+model = load_model("model/model.keras")
+emotion_labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sad', 'Surprise']
+
+# Ensure required folders exist
+os.makedirs("data/captured", exist_ok=True)
+log_path = "data/emotion_log.csv"
+
+# Face detection model
+face_cascade = cv2.CascadeClassifier("haarcascade.xml")
+
+st.title("📊 Student Emotion Monitoring Dashboard")
+
+# Step 1: Input form
+with st.form("student_form"):
+    student_name = st.text_input("Enter Student Name")
+    student_id = st.text_input("Enter Student ID")
+    submit = st.form_submit_button("Login & Capture")
 if submit:
     camera_image = st.camera_input("Take a picture")
 
