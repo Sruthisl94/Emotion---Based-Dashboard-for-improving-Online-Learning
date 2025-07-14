@@ -98,8 +98,8 @@ if "student_name" in st.session_state and "student_id" in st.session_state:
             else:
                 st.info("No previous emotion data found for this student.")
 
-           st.subheader("📊 Overall Emotion Distribution")
-           st.bar_chart(df["Emotion"].value_counts())
+            st.subheader("📊 Overall Emotion Distribution")
+            st.bar_chart(df["Emotion"].value_counts())
 
 
 
