@@ -95,5 +95,5 @@ if submit:
            else:
                st.info("No previous emotion data found for this student.")
 
-          st.subheader("📊 Overall Emotion Distribution")
-          st.bar_chart(df["Emotion"].value_counts())
+           st.subheader("📊 Overall Emotion Distribution")
+           st.bar_chart(df["Emotion"].value_counts())
