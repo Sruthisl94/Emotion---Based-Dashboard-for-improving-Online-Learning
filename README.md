@@ -74,4 +74,4 @@ The dashboard can be connected to Zoom or Google Meet to automatically capture s
 1. Clone this repository.
 2. Install the required dependencies.
 3. Or directly access the hosted dashboard here:  
-   [🎯 Streamlit App]([https://your-streamlit-link.streamlit.app](https://emotion-based-dashboard-analysis.streamlit.app/))
+   [🎯 Streamlit App](https://emotion-based-dashboard-analysis.streamlit.app/)
