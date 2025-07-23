@@ -7,7 +7,7 @@ Creating interactive dashboard that assesses student's emotion during online lea
 
 1.Dataset:
 
-Fer2013 and CK+ dataset from Kaggle is combined and images havign 7 emotions such as Angry, Disgust, Fear, Happy, Sad, Surprise, and Neutral are used in this project.
+Fer2013 and CK+ dataset from Kaggle is combined and images having 7 emotions such as Angry, Disgust, Fear, Happy, Sad, Surprise, and Neutral are used in this project.
 
 2. Preprocessing and Augmentation
 
