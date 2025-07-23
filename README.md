@@ -58,7 +58,8 @@ Confusion Matrix
 
 Classification Report (precision, recall, F1-score)
 
-Final model achieved approximately 84% validation accuracy after tuning.
+Final model achieved approximately 80% validation accuracy after tuning.
 
 # Results and Disussions
+For real time monitoring of student emotions during online platfoorm, an interactive dashboard has been created using streamlit. The architecture of the interface is shown below:
 
