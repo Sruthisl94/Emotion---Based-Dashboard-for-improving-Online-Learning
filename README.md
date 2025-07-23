@@ -61,5 +61,8 @@ Classification Report (precision, recall, F1-score)
 Final model achieved approximately 80% validation accuracy after tuning.
 
 # Results and Disussions
-For real time monitoring of student emotions during online platfoorm, an interactive dashboard has been created using streamlit. The architecture of the interface is shown below:
+For real time monitoring of student emotions during an online platfoorm, an interactive dashboard has been built using Streamlit. The architecture of the interface is shown below:
+In the dashboard the students can log in using their ID, and their face is captured via the webcam. The image is then processed, and with the trained model, the dashboard can predict the emotion. If a students appears sad, the teacher receives an alert to enhance the student's engagement by adjusting the teaching method. The dashboard also stores the information on all the students accesses. The graphical outputs, including bar graphs showing the number of studets under each emotion category, assst  in identifying the overall class performance.
 
+# Future work
+The dashboard can be connected to Zoom or Google Meet to automatically capture student facial expressions during live online classes, enabling real-time emotion detection and feedback without requiring students to access the dashboard separately.
