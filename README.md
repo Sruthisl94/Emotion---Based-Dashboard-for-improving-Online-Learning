@@ -68,3 +68,10 @@ In the dashboard the students can log in using their ID, and their face is captu
 
 # Future work
 The dashboard can be connected to Zoom or Google Meet to automatically capture student facial expressions during live online classes, enabling real-time emotion detection and feedback without requiring students to access the dashboard separately.
+
+## Usage
+
+1. Clone this repository.
+2. Install the required dependencies.
+3. Or directly access the hosted dashboard here:  
+   [🎯 Streamlit App]([https://your-streamlit-link.streamlit.app](https://emotion-based-dashboard-analysis.streamlit.app/))
