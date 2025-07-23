@@ -6,8 +6,9 @@ Creating interactive dashboard that assesses student's emotion during online lea
 ## Methodology
 
 1.Dataset:
-Fer2013 and CK+ dataset from Kaggle is combine and images havign 7 emotions is used in this study
+Fer2013 and CK+ dataset from Kaggle is combined and images havign 7 emotions such as Angry, Disgust, Fear, Happy, Sad, Surprise, and Neutral are used in this project.
 2. Preprocessing and Augmentation
+
 The images are rescaled to normalize pixel values between 0 and 1.
 
 The training data is augmented to increase diversity and prevent overfitting using:
@@ -40,7 +41,7 @@ Loss Function: Categorical Crossentropy
 Optimizer: Adam with learning rate 1e-4
 
 4. Training
-The model is trained for up to 100 epochs with:
+The model is trained for up to 90 epochs with:
 
 EarlyStopping (monitors validation loss)
 
@@ -59,5 +60,5 @@ Classification Report (precision, recall, F1-score)
 
 Final model achieved approximately 84% validation accuracy after tuning.
 
-
+# Results and Disussions
 
